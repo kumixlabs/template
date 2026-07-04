@@ -52,8 +52,7 @@ packages/your-package/
 │   ├── index.ts
 │   └── ...
 ├── package.json
-├── tsconfig.json
-├── tsup.config.ts (optional)
+├── tsconfig.json  # builds with tsc
 └── README.md
 ```
 

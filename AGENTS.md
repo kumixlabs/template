@@ -64,8 +64,8 @@ Commitlint enforces types: `feat`, `feature`, `fix`, `refactor`, `docs`, `build`
 
 ## CI
 
-- **Lint** (`.github/workflows/lint.yml`): PRs to `main` → build → lint:fix → lint → types:check
-- **Release** (`.github/workflows/release.yml`): push to `main` with `.changeset/**` or `packages/**` changes → build → lint → changesets/action (version PR or publish). Uses `GH_PAT || GITHUB_TOKEN` and `NPM_TOKEN`.
+- **Lint** (`.github/workflows/lint.yml`): PRs to `main` → build → lint → types:check → test
+- **Release** (`.github/workflows/release.yml`): push to `main` with `.changeset/**` or `packages/**` changes → build → lint → types:check → test → changesets/action (version PR or publish). Uses `GH_PAT || GITHUB_TOKEN` and `NPM_TOKEN`.
 
 ## Biomes
 
