@@ -5,7 +5,7 @@
 If you believe you've found a security vulnerability, please follow these steps:
 
 1. Do not disclose the vulnerability publicly until it has been addressed by the maintainers.
-2. Email your findings to `kumixdev@gmail.com` Include:
+2. Email your findings to `kumixlabs@gmail.com` Include:
    - A description of the vulnerability
    - Steps to reproduce the vulnerability
    - Potential impact of the vulnerability

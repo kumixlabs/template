@@ -18,8 +18,8 @@ This template is community-driven. Your contributions help:
 
 ### Prerequisites
 
-- [Bun](https://bun.sh) 1.3.3 or higher
-- Node.js 22 or higher
+- [Bun](https://bun.sh) 1.3.0 or higher
+- Node.js 24 or higher
 - Git
 
 ### Setup
@@ -208,7 +208,7 @@ Make sure:
 - [ ] Code follows the project's style guidelines
 - [ ] All checks pass (`bun run types:check`)
 - [ ] Build succeeds (`bun run build`)
-- [ ] Code is properly formatted (`bun run lint:format`)
+- [ ] Code is properly formatted (`bun run format`)
 - [ ] Commit messages follow conventional commits
 - [ ] Documentation is updated (if needed)
 - [ ] No breaking changes (or clearly documented if necessary)
@@ -218,9 +218,9 @@ Make sure:
 ### Adding a New Package
 
 1. Create a new directory in `packages/`
-2. Copy the structure from an existing package
+2. Copy the structure from an existing package (e.g., `packages/core`)
 3. Update `package.json` with appropriate metadata
-4. (Optional) Create `tsup.config.ts` for build configuration
+4. Add a `tsconfig.json` extending `@kumix/tsconfig/node`
 5. Ensure the package is included in the workspace
 
 ### Package Structure
