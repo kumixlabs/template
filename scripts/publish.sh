@@ -1,14 +1,30 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Publish packages via Changesets.
-#
-# `changeset publish` is registry-aware: it only publishes versions that are
-# not already on npm, skips packages marked `"private": true`, and creates the
-# corresponding git tags. This is safer than a raw `bun publish` loop, which
-# always attempts to publish the current version and fails on re-runs.
+echo "🔍 Searching for packages..."
 
-echo "📦 Publishing changed packages with Changesets..."
-changeset publish
+# Get all package.json files except those in node_modules
+PACKAGES=$(find packages -name package.json -not -path "*/node_modules/*")
+
+for pkg in $PACKAGES; do
+  dir=$(dirname "$pkg")
+
+  echo "📦 Publishing: $dir"
+
+  (
+    cd "$dir"
+
+    # Skip if private: true
+    if grep -q '"private": *true' package.json; then
+      echo "⏭ Skipping private package: $dir"
+      exit 0
+    fi
+
+    bun publish || true
+  )
+done
+
+echo "🏷 Creating tag(s) with Changesets..."
+changeset tag
 
 echo "✅ Done!"

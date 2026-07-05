@@ -1,0 +1,30 @@
+{
+  "name": "@kumix/mcp",
+  "version": "0.0.0",
+  "private": true,
+  "description": "MCP server for Kumix Template documentation and code assistance",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "kumix-mcp-template": "dist/index.js"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "clean:all": "rimraf .turbo dist node_modules",
+    "build": "tsc",
+    "dev": "bun src/index.ts",
+    "start": "node dist/index.js",
+    "types:check": "tsc --noEmit",
+    "test": "node dist/index.js --test"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "glob": "^13.0.6",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@kumix/tsconfig": "^0.1.0",
+    "@types/node": "^26.1.0"
+  }
+}

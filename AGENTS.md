@@ -8,6 +8,15 @@
 - Internal deps use workspace protocol: `"@kumix/other": "workspace:*"`.
 - `bun install` runs `prepare` → installs Husky hooks (v9, `.husky/_/`).
 
+## Workspace Layout
+
+- `packages/*` — libs: `@kumix/core`, `@kumix/main`, `@kumix/mcp`. `scripts/publish.sh` only scans `packages/**` and skips any package with `"private": true`.
+- All three packages are currently `"private": true` (template placeholders) — nothing publishes until you remove that flag.
+- `@kumix/mcp` is in changeset `ignore` (`.changeset/config.json`) — excluded from versioning even if made public.
+- `apps/*` — `docs`, `web` (empty `.gitkeep` placeholders).
+- `examples/*` — `next`, `vite` (empty `.gitkeep` placeholders).
+- Packages build with `tsc` (`build: "tsc"`), extending external `@kumix/tsconfig/node`. Output goes to `dist/`.
+
 ## Commands
 
 ```bash

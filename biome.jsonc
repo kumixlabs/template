@@ -1,4 +1,7 @@
 {
   "$schema": "https://biomejs.dev/schemas/latest/schema.json",
-  "extends": ["@kumix/biome-config/base"]
+  "extends": ["@kumix/biome-config/base"],
+  "files": {
+    "includes": ["!!**/test"]
+  }
 }
