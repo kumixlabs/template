@@ -16,10 +16,13 @@
     }
   },
   "scripts": {
-    "clean": "tsc -b --clean && rimraf dist",
-    "clean:all": "rimraf .turbo dist node_modules",
+    "clean": "rimraf dist",
+    "clean:all": "rimraf .turbo coverage dist node_modules",
     "build": "tsc -p tsconfig.build.json",
-    "types:check": "tsc --noEmit -p tsconfig.json"
+    "types:check": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "homepage": "https://github.com/kumixlabs/template",
   "repository": {
