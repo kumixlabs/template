@@ -1,5 +1,5 @@
 {
-  "extends": "@kumix/tsconfig/node",
+  "extends": ["@kumix/tsconfig/node"],
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src"

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { access, readFile } from "node:fs/promises";
-import { basename, dirname, extname, join, relative, resolve } from "node:path";
+import { basename, dirname, extname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -20,29 +20,35 @@ if (isTestMode) {
 // Get current directory for ESM modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-// Get the correct packages directory relative to this file
-// This works regardless of where the server is run from
+// Repo root (two levels up from packages/mcp/dist|src). Used as the `cwd` for
+// glob so that ignore patterns are matched against project-relative paths
+// (glob does not match ignore patterns against absolute paths reliably).
 const PACKAGES_ROOT = resolve(__dirname, "..", "..");
-const PACKAGES_DIR = PACKAGES_ROOT;
+
+// Directories to never scan when looking for package.json or source files.
+const SCAN_IGNORE = ["**/node_modules/**", "**/dist/**"];
 
 // Package information cache
-// biome-ignore lint/suspicious/noExplicitAny: <>
+// biome-ignore lint/suspicious/noExplicitAny: package metadata shape is dynamic
 const packages = new Map<string, any>();
-// biome-ignore lint/suspicious/noExplicitAny: <>
+// biome-ignore lint/suspicious/noExplicitAny: component metadata shape is dynamic
 const components = new Map<string, any>();
 
 class KumixTemplateMCPServer {
   private async loadPackageInfo(): Promise<void> {
     try {
-      // Scan packages directory (including subdirectories)
-      const packageDirs = await glob(join(PACKAGES_DIR, "**/package.json"), {
+      // Scan the repo's packages/ directory. Using a relative pattern with
+      // `cwd` is required: glob's `ignore` patterns are matched against
+      // project-relative paths, so absolute patterns would let node_modules
+      // and dist sneak back in.
+      const packageDirs = await glob("packages/**/package.json", {
+        cwd: PACKAGES_ROOT,
         windowsPathsNoEscape: true,
+        ignore: SCAN_IGNORE,
       });
 
-      // Get parent directories of all package.json files
-      const allPackageDirs = packageDirs.map((pkgJsonPath) => dirname(pkgJsonPath));
-
-      for (const packageDir of allPackageDirs) {
+      for (const relativePackageDir of packageDirs.map((p) => dirname(p))) {
+        const packageDir = resolve(PACKAGES_ROOT, relativePackageDir);
         const packageJsonPath = join(packageDir, "package.json");
 
         try {
@@ -60,12 +66,18 @@ class KumixTemplateMCPServer {
               await access(srcDir);
               hasSrcDir = true;
 
-              // Get all TypeScript/TSX files in src directory
-              componentFiles = await glob(join(srcDir, "**/*.{ts,tsx}"), {
+              // Get all TypeScript/TSX files in src directory.
+              // Use a relative pattern + cwd so the ignore patterns apply.
+              const relativeSrc = relative(PACKAGES_ROOT, srcDir).replace(/\\/g, "/");
+              const componentFileRel = await glob(`${relativeSrc}/**/*.{ts,tsx}`, {
+                cwd: PACKAGES_ROOT,
                 windowsPathsNoEscape: true,
+                ignore: ["**/*.test.ts", "**/*.test.tsx", ...SCAN_IGNORE],
               });
-            } catch (_error) {
-              // Package doesn't have a src directory
+              componentFiles = componentFileRel.map((p) => resolve(PACKAGES_ROOT, p));
+            } catch (error) {
+              // Package doesn't have a src directory — expected for some packages.
+              console.error(`[mcp] no src/ in ${packageJson.name}:`, error);
               hasSrcDir = false;
             }
 
@@ -85,7 +97,6 @@ class KumixTemplateMCPServer {
               srcDir: hasSrcDir ? srcDir : null,
               packageDir, // Store package root directory
               componentFiles,
-              category: this.getPackageCategory(packageJson.name),
             };
 
             packages.set(packageJson.name, packageInfo);
@@ -100,47 +111,39 @@ class KumixTemplateMCPServer {
                   name: componentName,
                   package: packageJson.name,
                   path: relativePath,
-                  fullPath: componentFile,
                 });
               }
             }
           }
-        } catch (_error) {}
+        } catch (error) {
+          console.error(`[mcp] failed to read ${packageJsonPath}:`, error);
+        }
       }
     } catch (error) {
       console.error("Error loading package info:", error);
     }
   }
 
-  private getPackageCategory(_packageName: string): string {
-    return "package";
-  }
-
-  async listPackages(category: string = "all") {
+  async listPackages() {
     if (packages.size === 0) {
       await this.loadPackageInfo();
     }
 
-    let filteredPackages = Array.from(packages.values());
-
-    if (category !== "all") {
-      filteredPackages = filteredPackages.filter((pkg) => pkg.category === category);
-    }
+    const allPackages = Array.from(packages.values());
 
     return {
       content: [
         {
-          type: "text" as "text",
+          type: "text" as const,
           text: JSON.stringify(
             {
-              packages: filteredPackages.map((pkg) => ({
+              packages: allPackages.map((pkg) => ({
                 name: pkg.name,
                 version: pkg.version,
                 description: pkg.description,
-                category: pkg.category,
                 exportsCount: pkg.exports.length,
               })),
-              total: filteredPackages.length,
+              total: allPackages.length,
             },
             null,
             2,
@@ -160,7 +163,7 @@ class KumixTemplateMCPServer {
       return {
         content: [
           {
-            type: "text" as "text",
+            type: "text" as const,
             text: JSON.stringify(
               {
                 error: `Package ${packageName} not found`,
@@ -174,11 +177,13 @@ class KumixTemplateMCPServer {
       };
     }
 
+    // Strip filesystem-absolute fields before returning to the client.
+    const { packageDir, srcDir, componentFiles, ...safeInfo } = pkg;
     return {
       content: [
         {
-          type: "text" as "text",
-          text: JSON.stringify(pkg, null, 2),
+          type: "text" as const,
+          text: JSON.stringify(safeInfo, null, 2),
         },
       ],
     };
@@ -202,7 +207,7 @@ class KumixTemplateMCPServer {
     return {
       content: [
         {
-          type: "text" as "text",
+          type: "text" as const,
           text: JSON.stringify(
             {
               components: matchingComponents,
@@ -226,7 +231,7 @@ class KumixTemplateMCPServer {
       return {
         content: [
           {
-            type: "text" as "text",
+            type: "text" as const,
             text: JSON.stringify(
               {
                 error: `Package ${packageName} not found`,
@@ -239,29 +244,22 @@ class KumixTemplateMCPServer {
       };
     }
 
-    // Handle packages without a src directory
-    let fullPath: string;
-    if (pkg.srcDir) {
-      fullPath = join(pkg.srcDir, componentPath);
-    } else {
-      // For packages without src, use package root directory
-      fullPath = join(pkg.packageDir, componentPath);
-    }
+    // Resolve the requested path and ensure it stays inside the package directory.
+    // Without this, a caller could request "../../.env" or similar to read files
+    // outside the intended scope (path traversal).
+    const baseDir = pkg.srcDir ?? pkg.packageDir;
+    const packageRoot = resolve(pkg.packageDir);
+    const resolvedPath = resolve(baseDir, componentPath);
 
-    try {
-      await access(fullPath);
-      const code = await readFile(fullPath, "utf-8");
-
+    if (resolvedPath !== packageRoot && !resolvedPath.startsWith(`${packageRoot}${sep}`)) {
       return {
         content: [
           {
-            type: "text" as "text",
+            type: "text" as const,
             text: JSON.stringify(
               {
+                error: `Component path escapes package directory: ${componentPath}`,
                 package: packageName,
-                component: componentPath,
-                code,
-                fullPath,
               },
               null,
               2,
@@ -269,16 +267,38 @@ class KumixTemplateMCPServer {
           },
         ],
       };
-    } catch (_error) {
+    }
+
+    try {
+      await access(resolvedPath);
+      const code = await readFile(resolvedPath, "utf-8");
+
       return {
         content: [
           {
-            type: "text" as "text",
+            type: "text" as const,
+            text: JSON.stringify(
+              {
+                package: packageName,
+                component: componentPath,
+                code,
+              },
+              null,
+              2,
+            ),
+          },
+        ],
+      };
+    } catch (error) {
+      console.error(`[mcp] read_component_code failed for ${packageName}/${componentPath}:`, error);
+      return {
+        content: [
+          {
+            type: "text" as const,
             text: JSON.stringify(
               {
                 error: `Component file not found: ${componentPath}`,
                 package: packageName,
-                searchedPath: fullPath,
               },
               null,
               2,
@@ -299,7 +319,7 @@ class KumixTemplateMCPServer {
       return {
         content: [
           {
-            type: "text" as "text",
+            type: "text" as const,
             text: JSON.stringify(
               {
                 error: `Package ${packageName} not found`,
@@ -324,7 +344,7 @@ class KumixTemplateMCPServer {
       return {
         content: [
           {
-            type: "text" as "text",
+            type: "text" as const,
             text: JSON.stringify(
               {
                 package: packageName,
@@ -340,14 +360,15 @@ class KumixTemplateMCPServer {
           },
         ],
       };
-    } catch (_error) {
+    } catch (error) {
+      console.error(`[mcp] no README for ${packageName}, generating example:`, error);
       // Generate basic usage example
       const example = this.generateUsageExample(packageName, componentName);
 
       return {
         content: [
           {
-            type: "text" as "text",
+            type: "text" as const,
             text: JSON.stringify(
               {
                 package: packageName,
@@ -364,11 +385,12 @@ class KumixTemplateMCPServer {
     }
   }
 
-  private generateUsageExample(packageName: string, _componentName?: string): string {
+  private generateUsageExample(packageName: string, componentName?: string): string {
+    const importTarget = componentName ? `{ ${componentName} }` : "* as pkg";
     return `// Example usage for ${packageName}
-import { greet } from "${packageName}";
+import ${importTarget} from "${packageName}";
 
-const message = greet("world");`;
+// TODO: replace with a real call once you know the package's API.`;
   }
 }
 
@@ -386,12 +408,10 @@ server.registerTool(
   "list_packages",
   {
     description: "List all available Kumix template packages",
-    inputSchema: {
-      category: z.enum(["package", "all"]).default("all").describe("Filter packages by category"),
-    },
+    inputSchema: {},
   },
-  async ({ category }) => {
-    const result = await kumixServer.listPackages(category || "all");
+  async () => {
+    const result = await kumixServer.listPackages();
     return result;
   },
 );

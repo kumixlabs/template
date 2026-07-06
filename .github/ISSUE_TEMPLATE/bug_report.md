@@ -32,7 +32,7 @@ A clear and concise description of what you expected to happen.
 
 - Package version: [e.g., 1.0.3]
 - Node.js version: [e.g., 20.10.0]
-- Bun version (if applicable): [e.g., 1.3.3]
+- Bun version (if applicable): [e.g., 1.3.0]
 - OS: [e.g., macOS, Windows, Linux]
 - Browser (if applicable): [e.g., Chrome 120, Safari 17]
 

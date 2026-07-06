@@ -7,19 +7,18 @@
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
-  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "default": "./dist/index.js"
     }
   },
   "scripts": {
     "clean": "tsc -b --clean && rimraf dist",
     "clean:all": "rimraf .turbo dist node_modules",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "types:check": "tsc --noEmit -p tsconfig.json"
   },
   "homepage": "https://github.com/kumixlabs/template",

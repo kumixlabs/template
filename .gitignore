@@ -133,6 +133,7 @@ dist
 .DS_Store
 .npmrc
 .vercel
+.husky/_/
 next-env.d.ts
 .vscode/folder.jsonc
 

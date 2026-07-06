@@ -40,11 +40,11 @@ cd packages/mcp
 bun run dev
 ```
 
-### Testing
+### Smoke Test
 
 ```bash
 cd packages/mcp
-bun run test
+bun run smoke
 ```
 
 ## Configuration
@@ -113,9 +113,7 @@ Add the MCP server to your MCP client configuration:
 
 Lists all available packages in the template.
 
-**Parameters:**
-
-- `category` (optional): Filter by "package" or "all" (default: "all")
+**Parameters:** none
 
 **Example Prompts:**
 

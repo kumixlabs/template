@@ -83,12 +83,12 @@ This project uses [Biome](https://biomejs.dev/) for linting and formatting to en
 
 - **Indentation**: 2 spaces
 - **Line Width**: 100 characters
-- **Quotes**: Single quotes for JavaScript/TypeScript
+- **Quotes**: Double quotes for JavaScript/TypeScript
 - **Semicolons**: Always required
 - **Trailing Commas**: All
 - **Arrow Parentheses**: Always
 
-### Lint dan Format
+### Lint and Format
 
 Before committing, always run:
 
@@ -232,8 +232,7 @@ packages/your-package/
 │   ├── types.ts          # Type definitions
 │   └── ...
 ├── package.json          # Package metadata
-├── tsup.config.ts        # Build configuration
-├── tsconfig.json         # TypeScript configuration
+├── tsconfig.json         # TypeScript configuration (builds with tsc)
 └── README.md             # Package documentation
 ```
 
@@ -244,7 +243,7 @@ This project uses [Changesets](https://github.com/changesets/changesets) for ver
 1. **Create a changeset**:
 
    ```bash
-   npx changeset
+   bunx changeset
    ```
 
    Follow the prompts to describe your changes.

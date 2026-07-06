@@ -62,7 +62,7 @@ This template uses Changesets.
 
 ```bash
 # Create a changeset describing your changes
-npx changeset
+bunx changeset
 
 # Version packages (CI will also do this)
 bun run version

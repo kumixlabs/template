@@ -29,8 +29,8 @@ bun run format              # biome format --write
 bun run dev                 # turbo dev (persistent)
 bun run clean               # turbo clean
 bun run clean:all           # turbo clean:all + rm .turbo bun.lock coverage node_modules
-bun run test                # vitest run
-npx changeset               # create a changeset
+bun run test                # vitest run (single process, projects: packages/*)
+bunx changeset              # create a changeset
 bun run version             # changeset version + bun update
 bun run release             # bash scripts/publish.sh (publishes only packages/**, not apps/ or examples/)
 ```
@@ -39,9 +39,16 @@ Filter to a single workspace:
 
 ```bash
 bun run build --filter=@kumix/core
-bun run test --filter=@kumix/main
+bun run types:check --filter=@kumix/main
 bun add <pkg> --filter=@kumix/core
 ```
+
+> Note: `test` runs Vitest at the root (`projects: ["packages/*"]`), so turbo's
+> `--filter` doesn't apply. To run a single package's tests:
+>
+> ```bash
+> bunx vitest run packages/core
+> ```
 
 ## Pipeline (turbo.json)
 
