@@ -34,6 +34,19 @@ const packages = new Map<string, any>();
 // biome-ignore lint/suspicious/noExplicitAny: component metadata shape is dynamic
 const components = new Map<string, any>();
 
+interface PackageInfo {
+  name: string;
+  version: string;
+  description: string;
+  main: string;
+  exports: string[];
+  dependencies: Record<string, string>;
+  devDependencies: Record<string, string>;
+  srcDir: string | null;
+  packageDir: string;
+  componentFiles: string[];
+}
+
 class KumixTemplateMCPServer {
   private async loadPackageInfo(): Promise<void> {
     try {
@@ -82,16 +95,16 @@ class KumixTemplateMCPServer {
             }
 
             // Extract exported components/members from package.json exports
-            const exports = Object.keys(packageJson.exports || {})
+            const exportEntries = Object.keys(packageJson.exports || {})
               .filter((key) => key !== "./package.json")
               .map((key) => key.replace("./", ""));
 
-            const packageInfo = {
+            const packageInfo: PackageInfo = {
               name: packageJson.name,
               version: packageJson.version,
               description: packageJson.description,
               main: packageJson.main,
-              exports: exports,
+              exports: exportEntries,
               dependencies: packageJson.dependencies || {},
               devDependencies: packageJson.devDependencies || {},
               srcDir: hasSrcDir ? srcDir : null,

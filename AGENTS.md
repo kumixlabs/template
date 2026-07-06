@@ -29,7 +29,9 @@ bun run format              # biome format --write
 bun run dev                 # turbo dev (persistent)
 bun run clean               # turbo clean
 bun run clean:all           # turbo clean:all + rm .turbo bun.lock coverage node_modules
-bun run test                # vitest run (single process, projects: packages/*)
+bun run test                # turbo test (vitest run per package)
+bun run test:watch          # turbo test:watch (vitest watch per package)
+bun run test:coverage       # turbo test:coverage (vitest run --coverage)
 bunx changeset              # create a changeset
 bun run version             # changeset version + bun update
 bun run release             # bash scripts/publish.sh (publishes only packages/**, not apps/ or examples/)
@@ -40,15 +42,9 @@ Filter to a single workspace:
 ```bash
 bun run build --filter=@kumix/core
 bun run types:check --filter=@kumix/main
+bun run test --filter=@kumix/core
 bun add <pkg> --filter=@kumix/core
 ```
-
-> Note: `test` runs Vitest at the root (`projects: ["packages/*"]`), so turbo's
-> `--filter` doesn't apply. To run a single package's tests:
->
-> ```bash
-> bunx vitest run packages/core
-> ```
 
 ## Pipeline (turbo.json)
 
@@ -58,8 +54,12 @@ bun add <pkg> --filter=@kumix/core
 | types:check     | ^build    | no         | yes    |
 | dev             | -         | yes        | no     |
 | start           | ^build    | yes        | no     |
-| lint            | -         | no         | yes    |
+| test            | ^build    | no         | yes    |
+| test:coverage   | ^build    | no         | yes    |
+| test:watch      | ^build    | yes        | no     |
 | clean/clean:all | -         | no         | no     |
+
+> Note: `lint`/`format`/`lint:fix` run Biome directly at the root (not via turbo).
 
 ## Lint-staged (pre-commit)
 

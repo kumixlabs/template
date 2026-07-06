@@ -8,8 +8,9 @@ This template provides a ready-to-use setup for multi-package repositories with 
 
 - Monorepo workspaces: `packages/**`, `apps/**`, `examples/**`
 - Bun-first workflows: `bun install`, `bun run <script>`
-- Turborepo pipelines for `dev`, `build`, `start`, `types:check`
+- Turborepo pipelines for `dev`, `build`, `start`, `types:check`, `test`, `test:watch`, `test:coverage`, `clean`
 - Biome-based lint and format with consistent project style
+- Vitest for unit testing with coverage thresholds
 - Versioning and publishing via Changesets
 - CI workflows for linting and releases
 
@@ -36,6 +37,21 @@ bun run lint:fix
 
 # Format code
 bun run format
+
+# Run tests
+bun run test
+
+# Run tests with coverage
+bun run test:coverage
+
+# Watch mode tests
+bun run test:watch
+
+# Clean build artifacts
+bun run clean
+
+# Deep clean (removes node_modules, lockfile, etc.)
+bun run clean:all
 ```
 
 ## Workspace Layout

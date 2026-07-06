@@ -40,6 +40,11 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["coverage/**"],
       "passThroughEnv": ["NODE_ENV", "CI"]
+    },
+    "test:watch": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
     }
   }
 }

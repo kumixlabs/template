@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "description": "MCP server for Kumix Template documentation and code assistance",
+  "author": "Kumix Labs <hai@kumix.io>",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
