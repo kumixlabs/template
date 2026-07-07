@@ -20,13 +20,25 @@ if (isTestMode) {
 // Get current directory for ESM modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-// Repo root (two levels up from packages/mcp/dist|src). Used as the `cwd` for
+// Repo root (three levels up from packages/mcp/dist|src). Used as the `cwd` for
 // glob so that ignore patterns are matched against project-relative paths
 // (glob does not match ignore patterns against absolute paths reliably).
-const PACKAGES_ROOT = resolve(__dirname, "..", "..");
+const PACKAGES_ROOT = resolve(__dirname, "..", "..", "..");
 
 // Directories to never scan when looking for package.json or source files.
 const SCAN_IGNORE = ["**/node_modules/**", "**/dist/**"];
+
+// Read this package's version at startup so the advertised server version
+// stays in sync with package.json (avoids drift between the two). Reading the
+// file at runtime keeps it outside `rootDir`/tsc's source graph.
+let SERVER_VERSION = "0.0.0";
+try {
+  const pkgJsonPath = resolve(__dirname, "..", "package.json");
+  const pkgJson = JSON.parse(await readFile(pkgJsonPath, "utf-8"));
+  if (typeof pkgJson.version === "string") SERVER_VERSION = pkgJson.version;
+} catch {
+  // keep default
+}
 
 // Package information cache
 // biome-ignore lint/suspicious/noExplicitAny: package metadata shape is dynamic
@@ -264,6 +276,28 @@ class KumixTemplateMCPServer {
     const packageRoot = resolve(pkg.packageDir);
     const resolvedPath = resolve(baseDir, componentPath);
 
+    // Restrict to safe source extensions so this tool can't be used to read
+    // arbitrary files (package.json, .env, lock files, etc.).
+    const allowedExtensions = new Set([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"]);
+    if (!allowedExtensions.has(extname(resolvedPath).toLowerCase())) {
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: JSON.stringify(
+              {
+                error: `Unsupported file type. Allowed extensions: ${[...allowedExtensions].join(", ")}`,
+                package: packageName,
+                component: componentPath,
+              },
+              null,
+              2,
+            ),
+          },
+        ],
+      };
+    }
+
     if (resolvedPath !== packageRoot && !resolvedPath.startsWith(`${packageRoot}${sep}`)) {
       return {
         content: [
@@ -410,7 +444,7 @@ import ${importTarget} from "${packageName}";
 // Create server instance
 const server = new McpServer({
   name: "Kumix Template",
-  version: "0.0.0",
+  version: SERVER_VERSION,
 });
 
 // Instance of our business logic

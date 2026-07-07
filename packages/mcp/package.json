@@ -17,7 +17,7 @@
     "dev": "bun src/index.ts",
     "start": "node dist/index.js",
     "types:check": "tsc --noEmit",
-    "smoke": "node dist/index.js --test"
+    "test": "node dist/index.js --test"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
