@@ -17,7 +17,7 @@ The server scans `packages/**` at runtime and indexes every workspace package wh
 name starts with `@kumix/` (it excludes itself, `@kumix/mcp`):
 
 - `@kumix/core` - Core package for the Kumix template
-  - **Exports**: `.` - main entry (`greet`, `version`)
+  - **Exports**: `.` - main entry (`greet`)
 - `@kumix/main` - Main package for the Kumix template
   - **Exports**: `.` - main entry, depends on `@kumix/core`
 

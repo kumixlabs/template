@@ -16,6 +16,6 @@ assignees: ""
 
 ## Environment (if relevant)
 
-- Package(s): <!-- e.g. @kumix/eslint-config -->
+- Package(s): <!-- e.g. @kumix/core -->
 - Version:
 - Bun / Node version:
