@@ -38,7 +38,7 @@
     "prettier": "^3.9.4",
     "rimraf": "^6.1.3",
     "turbo": "^2.10.4",
-    "typescript": "^6.0.3",
+    "typescript": "catalog:",
     "vitest": "^4.1.10"
   },
   "workspaces": {
@@ -47,7 +47,10 @@
       "examples/*",
       "apps/*"
     ],
-    "catalog": {}
+    "catalog": {
+      "@kumix/tsconfig": "0.1.0",
+      "typescript": "6.0.3"
+    }
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,cjs,mjs,cts,mts}": "biome check --write --no-errors-on-unmatched",

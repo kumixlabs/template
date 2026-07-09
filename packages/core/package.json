@@ -41,7 +41,7 @@
     "template"
   ],
   "devDependencies": {
-    "@kumix/tsconfig": "^0.1.0"
+    "@kumix/tsconfig": "catalog:"
   },
   "publishConfig": {
     "access": "public"
