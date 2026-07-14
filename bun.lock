@@ -27,7 +27,7 @@
       "name": "@kumix/core",
       "version": "0.0.0",
       "devDependencies": {
-        "@kumix/tsconfig": "catalog:",
+        "@kumix/tsconfig": "^0.1.0",
       },
     },
     "packages/main": {
@@ -37,7 +37,7 @@
         "@kumix/core": "workspace:*",
       },
       "devDependencies": {
-        "@kumix/tsconfig": "catalog:",
+        "@kumix/tsconfig": "^0.1.0",
       },
     },
     "packages/mcp": {
@@ -52,13 +52,12 @@
         "zod": "^4.4.3",
       },
       "devDependencies": {
-        "@kumix/tsconfig": "catalog:",
+        "@kumix/tsconfig": "^0.1.0",
         "@types/node": "^26.1.1",
       },
     },
   },
   "catalog": {
-    "@kumix/tsconfig": "0.1.0",
     "typescript": "6.0.3",
   },
   "packages": {
