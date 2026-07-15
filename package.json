@@ -24,7 +24,7 @@
   "author": "Kumix Labs <hai@kumix.io>",
   "license": "MIT",
   "devDependencies": {
-    "@biomejs/biome": "^2.5.3",
+    "@biomejs/biome": "^2.5.4",
     "@changesets/changelog-github": "^0.7.0",
     "@changesets/cli": "^2.31.0",
     "@commitlint/cli": "^21.2.1",
