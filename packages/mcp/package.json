@@ -20,12 +20,12 @@
     "test": "node dist/index.js --test"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "glob": "^13.0.6",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@kumix/tsconfig": "^0.1.0",
-    "@types/node": "^26.1.1"
+    "@types/node": "^26.1.2"
   }
 }
