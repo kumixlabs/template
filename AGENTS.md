@@ -48,9 +48,8 @@ bun add <pkg> --filter=@kumix/core
 
 ## Package Build & Test Quirks
 
-- `@kumix/core` and `@kumix/main`: `build` = `tsc -p tsconfig.build.json`, `types:check` = `tsc --noEmit -p tsconfig.json`. Both configs exclude `test/` and `dist/`; the only real difference is emit vs no-emit. Both extend external `@kumix/tsconfig/node`, output to `dist/`.
-- `@kumix/main` has no `tsconfig.build.json` of its own beyond the same pattern — when editing, keep both `tsconfig.json` and `tsconfig.build.json` in sync.
-- `@kumix/mcp` is structurally different: `build` = plain `tsc` (no `tsconfig.build.json`), `dev` = `bun src/index.ts`, `start` = `node dist/index.js`, `test` = `node dist/index.js --test` (**requires `build` first**; the `--test` flag short-circuits the MCP server in `src/index.ts`). No vitest, no coverage config.
+- `@kumix/core` and `@kumix/main` both have `tsconfig.json` and `tsconfig.build.json` (excludes `test/`). Keep both in sync when editing.
+- `@kumix/mcp` runs `node dist/index.js --test` for tests, which requires building first.
 - Vitest (core + main only): `test/**/*.test.ts`, `globals: true`, node env. Coverage thresholds enforced: **lines 90%, branches 85%** — dropping below fails `test:coverage`.
 
 ## Pipeline (turbo.json)
