@@ -15,7 +15,7 @@
 - `@kumix/main` depends on `@kumix/core` (`workspace:*`) → core must build before main (turbo `^build` handles ordering).
 - `@kumix/mcp` is in changeset `ignore` (`.changeset/config.json`) — excluded from versioning even if made public.
 - `apps/*` (`docs`, `web`) and `examples/*` (`next`, `vite`) are empty `.gitkeep` placeholders.
-- `scripts/publish.sh` only scans `packages/**` for `package.json`, skips `"private": true`, and is **idempotent** — skips versions already on the registry (`npm view`). Runs `changeset tag` after publishing.
+- `scripts/publish.sh` only scans `packages/**` for `package.json`, skips `"private": true`, and is **idempotent** — skips versions already on the registry (`npm view`). Runs `changeset git-tag` after publishing.
 
 ## Commands
 

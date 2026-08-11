@@ -42,7 +42,7 @@ for pkg in $PACKAGES; do
 done
 
 echo "🏷 Creating tag(s) with Changesets..."
-changeset tag
+changeset git-tag
 
 if [ ${#failed[@]} -gt 0 ]; then
   echo "❌ Publishing failed for:" >&2
