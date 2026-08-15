@@ -31,7 +31,7 @@ bun run test                # turbo test (vitest run per package)
 bun run test:watch          # turbo test:watch (persistent)
 bun run test:coverage       # turbo test:coverage (vitest run --coverage)
 bun run clean               # turbo clean
-bun run clean:all           # turbo clean:all && rm -rf .turbo bun.lock .husky/_ node_modules
+bun run clean:all           # turbo clean:all && bun -e fs.rmSync(.turbo, bun.lock, .husky/_, node_modules)
 bunx changeset              # create a changeset
 bun run version             # changeset version && bun update
 bun run release             # bash scripts/publish.sh (packages/** only, not apps/ or examples/)
