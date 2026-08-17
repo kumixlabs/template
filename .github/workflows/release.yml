@@ -22,11 +22,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Setup Git User
-        run: |
-          git config --global user.email "kumixlabs@gmail.com"
-          git config --global user.name "Kumix Labs"
-
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -69,15 +64,14 @@ jobs:
       - name: Create Release Pull Request or Publish to npm
         if: steps.build.outcome == 'success' && steps.lint.outcome == 'success' && steps.types.outcome == 'success' && steps.test.outcome == 'success'
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         with:
-          version: bun run version
-          title: "ci(changesets): :package: version packages"
-          commit: "ci(changesets): version packages"
-          publish: bun run release
-          setupGitUser: false
+          github-token: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
+          version-script: bun run version
+          pr-title: "ci(changesets): :package: version packages"
+          commit-message: "ci(changesets): version packages"
+          publish-script: bun run release
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_OPTIONS: --max-old-space-size=4096
