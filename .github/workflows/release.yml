@@ -69,7 +69,7 @@ jobs:
       - name: Create Release Pull Request or Publish to npm
         if: steps.build.outcome == 'success' && steps.lint.outcome == 'success' && steps.types.outcome == 'success' && steps.test.outcome == 'success'
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         with:
           version: bun run version
           title: "ci(changesets): :package: version packages"
