@@ -18,7 +18,7 @@ This template is community-driven. Your contributions help:
 
 ### Prerequisites
 
-- [Bun](https://bun.sh) 1.3.0 or higher
+- [Bun](https://bun.sh) 1.4.0 or higher
 - Node.js 24 or higher
 - Git
 
@@ -262,7 +262,7 @@ This project uses [Changesets](https://github.com/changesets/changesets) for ver
    bun run release
    ```
 
-   This builds and publishes all changed packages.
+   Runs `scripts/publish.sh` — publishes changed packages (idempotent; skips versions already on npm) and creates git tags. CI builds before publishing.
 
 ## Security
 

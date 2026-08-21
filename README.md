@@ -74,7 +74,7 @@ packages/your-package/
 
 ## Releases
 
-This template uses Changesets.
+This template uses Changesets with `changesets/action@v2` in CI. On merge to `main`, CI either opens a "Version Packages" PR or publishes to npm (skipping versions already on the registry), pushes git tags, and creates GitHub Releases automatically.
 
 ```bash
 # Create a changeset describing your changes
@@ -87,7 +87,7 @@ bun run version
 bun run release
 ```
 
-Ensure `NPM_TOKEN` is configured in CI for publishing.
+Ensure `NPM_TOKEN` (npm publish) and optionally `GH_PAT` (release PRs) are configured in CI.
 
 ## Contributing
 
