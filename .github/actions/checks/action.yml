@@ -1,0 +1,44 @@
+name: "Checks"
+description: "Setup Bun (pinned), install, build, lint, types, test"
+
+inputs:
+  bun-version:
+    description: "Pinned Bun version (keep in sync with packageManager in package.json)"
+    required: false
+    default: "1.4.0"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: ${{ inputs.bun-version }}
+
+    - name: Setup Bun cache
+      uses: actions/cache@v6
+      with:
+        path: ~/.bun/install/cache
+        key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-bun-
+
+    - name: Install Dependencies
+      shell: bash
+      run: bun install --frozen-lockfile
+
+    - name: Build
+      shell: bash
+      run: bun run build
+
+    - name: Lint
+      shell: bash
+      run: bun run lint
+
+    - name: Check Types
+      shell: bash
+      run: bun run types:check
+
+    - name: Test
+      shell: bash
+      run: bun run test

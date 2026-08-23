@@ -82,8 +82,9 @@ Commitlint enforces types: `feat`, `feature`, `fix`, `refactor`, `docs`, `build`
 
 ## CI
 
-- **Lint** (`.github/workflows/lint.yml`): PRs to `main` → `bun install --frozen-lockfile` → build → lint → types:check → test.
-- **Release** (`.github/workflows/release.yml`): push to `main` touching `.changeset/**` or `packages/**` → same checks → `changesets/action@v2` (version PR or publish). Requires `@changesets/cli@3` (uses `CHANGESETS_OUTPUT` ndjson for tag detection). Tag push + GitHub Releases are automatic (defaults `push-git-tags`/`create-github-releases`). Git user set manually (v2 has no `setupGitUser`). Token via `github-token` input using `GH_PAT || GITHUB_TOKEN`; `NPM_TOKEN` for npm. `scripts/publish.sh` emits tags via `changeset git-tag`.
+- Shared checks live in `.github/actions/checks` (composite action): pinned `bun 1.4.0` → `bun install --frozen-lockfile` → build → lint → types:check → test.
+- **Lint** (`.github/workflows/lint.yml`): PRs + pushes to `main` → shared checks.
+- **Release** (`.github/workflows/release.yml`): push to `main` touching `.changeset/**` or `packages/**` → shared checks → `changesets/action@v2` (version PR or publish; later steps auto-skip if checks fail). Requires `@changesets/cli@3` (uses `CHANGESETS_OUTPUT` ndjson for tag detection). Tag push + GitHub Releases are automatic (defaults `push-git-tags`/`create-github-releases`). Git user set manually (v2 has no `setupGitUser`). Token via `github-token` input using `GH_PAT || GITHUB_TOKEN`; `NPM_TOKEN` for npm. `scripts/publish.sh` emits tags via `changeset git-tag`.
 
 ## Other
 

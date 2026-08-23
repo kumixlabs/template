@@ -17,53 +17,19 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 jobs:
   release:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Setup Bun cache
-        uses: actions/cache@v6
-        with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
+      # Steps after a failed composite step are skipped by default,
+      # so changesets only runs when all checks pass.
+      - name: Run checks (build, lint, types, test)
+        uses: ./.github/actions/checks
 
       - name: Setup npmrc
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
 
-      - name: Install Dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Build
-        id: build
-        continue-on-error: false
-        run: bun run build
-
-      - name: Lint
-        id: lint
-        continue-on-error: false
-        run: bun run lint
-
-      - name: Check Types
-        id: types
-        continue-on-error: false
-        run: bun run types:check
-
-      - name: Test
-        id: test
-        continue-on-error: false
-        run: bun run test
-
       - name: Create Release Pull Request or Publish to npm
-        if: steps.build.outcome == 'success' && steps.lint.outcome == 'success' && steps.types.outcome == 'success' && steps.test.outcome == 'success'
-        id: changesets
         uses: changesets/action@v2
         with:
           github-token: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
@@ -74,4 +40,3 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_OPTIONS: --max-old-space-size=4096

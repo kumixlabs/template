@@ -9,14 +9,6 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { glob } from "glob";
 import { z } from "zod";
 
-// Check for test flag
-const isTestMode = process.argv.includes("--test");
-
-if (isTestMode) {
-  console.log("✅ MCP server executable test passed");
-  process.exit(0);
-}
-
 // Get current directory for ESM modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -539,6 +531,29 @@ server.registerTool(
     return result;
   },
 );
+
+/**
+ * Smoke test mode: `node dist/index.js --test` (used by `bun run test`).
+ * Loads the package index and asserts real data so a broken build,
+ * missing package.json, or empty scan fails the test instead of
+ * unconditionally passing.
+ */
+if (process.argv.includes("--test")) {
+  try {
+    await kumixServer.listPackages();
+    if (packages.size === 0) {
+      console.error("❌ MCP server test failed: no @kumix/ packages found");
+      process.exit(1);
+    }
+    console.log(
+      `✅ MCP server test passed (v${SERVER_VERSION}, ${packages.size} packages, ${components.size} components)`,
+    );
+    process.exit(0);
+  } catch (error) {
+    console.error("❌ MCP server test failed:", error);
+    process.exit(1);
+  }
+}
 
 /**
  * Main entry point for the Kumix Template MCP Server
