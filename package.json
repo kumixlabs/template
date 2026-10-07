@@ -24,22 +24,22 @@
   "author": "Kumix Labs <hai@kumix.io>",
   "license": "MIT",
   "devDependencies": {
-    "@biomejs/biome": "^2.5.14",
+    "@biomejs/biome": "^2.5.15",
     "@changesets/changelog-github": "^1.0.1",
     "@changesets/cli": "^3.0.3",
     "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.3",
     "@kumix/biome-config": "^0.1.0",
     "@types/bun": "^1.4.2",
-    "@types/node": "^26.6.3",
-    "@vitest/coverage-v8": "^5.0.2",
+    "@types/node": "^26.6.4",
+    "@vitest/coverage-v8": "^5.0.3",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
     "prettier": "^3.9.9",
     "rimraf": "^6.1.3",
-    "turbo": "^2.11.5",
+    "turbo": "^2.11.7",
     "typescript": "catalog:",
-    "vitest": "^5.0.2"
+    "vitest": "^5.0.3"
   },
   "workspaces": {
     "packages": [
