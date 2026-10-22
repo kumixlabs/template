@@ -3,7 +3,6 @@
 ### Reporting a Vulnerability
 
 If you believe you've found a security vulnerability, please follow these steps:
-
 1. Do not disclose the vulnerability publicly until it has been addressed by the maintainers.
 2. Email your findings to `hai@kumix.io` Include:
    - A description of the vulnerability

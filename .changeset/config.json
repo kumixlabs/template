@@ -13,5 +13,7 @@
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "bumpVersionsWithWorkspaceProtocolOnly": true,
-  "ignore": ["@kumix/mcp"]
+  "ignore": [
+    "@kumix/mcp"
+  ]
 }

@@ -1,4 +1,5 @@
 ---
+
 name: Custom issue
 about: Open an issue that doesn't fit the bug report or feature request templates
 title: ""
