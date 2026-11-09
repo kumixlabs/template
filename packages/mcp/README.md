@@ -5,6 +5,7 @@ MCP server for exploring the Kumix Template packages, their source code, and doc
 ## Overview
 
 This MCP server provides access to:
+
 - **Workspace packages** in the Kumix Template
 - **Component discovery** and search
 - **Source code reading** for development
@@ -14,6 +15,7 @@ This MCP server provides access to:
 
 The server scans `packages/**` at runtime and indexes every workspace package whose
 name starts with `@kumix/` (it excludes itself, `@kumix/mcp`):
+
 - `@kumix/core` - Core package for the Kumix template
   - **Exports**: `.` - main entry (`greet`)
 - `@kumix/main` - Main package for the Kumix template
@@ -72,6 +74,7 @@ Add the MCP server to your MCP client configuration:
 ### Path Guidelines
 
 **Finding the Correct Paths:**
+
 1. **Path to `dist/index.js`**: The `args` array must contain the absolute path to the compiled MCP server
 2. **Working Directory (`cwd`)**: Should point to the repository root where `packages/` is located
 
@@ -98,6 +101,7 @@ Add the MCP server to your MCP client configuration:
 ```
 
 **Important Notes:**
+
 - Use absolute paths (not relative paths)
 - Paths must point to the **built** files in `dist/`, not source files
 - The server must be built first: `cd packages/mcp && bun run build`
@@ -123,6 +127,7 @@ List the template packages.
 Gets detailed information about a specific package.
 
 **Parameters:**
+
 - `package_name` (required): Full package name (e.g., "@kumix/core")
 
 **Example Prompts:**
@@ -137,6 +142,7 @@ Show me details for @kumix/main.
 Searches for components (source files) across all packages.
 
 **Parameters:**
+
 - `component_name` (required): Name to search for
 - `package_filter` (optional): Filter by package name (e.g., core, main)
 
@@ -153,6 +159,7 @@ Look for components in the core package.
 Reads the source code of a specific component.
 
 **Parameters:**
+
 - `package_name` (required): Package containing the component
 - `component_path` (required): Relative path from the package `src/` directory
 
@@ -168,6 +175,7 @@ Show me the source for the main package entry.
 Gets usage examples for packages or components.
 
 **Parameters:**
+
 - `package_name` (required): Package name
 - `component_name` (optional): Specific component name
 
